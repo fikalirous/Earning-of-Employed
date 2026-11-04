@@ -8,6 +8,9 @@ Analysis of weekly earnings of Irish higher-education first-year entrants who di
 ## Layout
 
 ```
+app.py                                           Streamlit dashboard
+.streamlit/config.toml                           Streamlit theme/server settings
+requirements.txt / requirements-dev.txt          app deps / + notebook deps
 NPO13_Earnings of Employed Non_progressors.csv   raw download (untouched)
 data/raw/cpi/CPA01.csv                           CSO annual CPI (auto-downloaded by src/cpi.py if missing)
 src/clean.py                                     raw -> tidy (zeros classified, wide p25/p50/p75/n, real-terms columns)
@@ -20,17 +23,33 @@ notebooks/01_eda.ipynb                           exploratory analysis
 reports/figures/                                 charts exported by the notebook
 ```
 
-## Run
+## Dashboard (Streamlit)
 
 ```bash
 pip install -r requirements.txt
+streamlit run app.py
+```
+
+`app.py` has four tabs: Overview, Explore (gender / NFQ / outcome / sector), vs Graduates, Data (filter + CSV download).
+Sidebar switches between real (2024 €) and nominal, and between median / P25 / P75.
+
+**Deploy privately on Streamlit Community Cloud**
+1. Sign in at share.streamlit.io with GitHub and allow access to private repositories.
+2. *Create app* → repo `fikalirous/Earning-of-Employed`, branch `main`, main file `app.py`.
+3. After deploy: *Settings → Sharing* → keep the app **private** and invite viewers by email.
+
+## Notebooks
+
+```bash
+pip install -r requirements-dev.txt
 python src/clean.py
 python src/graduates.py
 jupyter nbconvert --to notebook --execute --inplace notebooks/01_eda.ipynb
 jupyter nbconvert --to notebook --execute --inplace notebooks/02_vs_graduates.ipynb
 ```
 
-Data files (`*.csv`, `*.parquet`, `data/`) are not in git. The scripts download any missing raw table
+Only the small processed parquet files (`data/processed/*.parquet`, ~300 KB) are in git, so the dashboard
+starts without downloading anything. Raw CSVs are not committed; the scripts download any missing raw table
 (NPO13, HEO12, CPA01) from the CSO PxStat API and rebuild `data/processed/`.
 
 ## Tidy schema
