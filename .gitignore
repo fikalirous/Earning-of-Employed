@@ -1,0 +1,19 @@
+# Data: all re-downloadable from the CSO API / rebuilt by src/*.py
+*.csv
+*.parquet
+data/
+
+# Python / Jupyter
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+.env
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
